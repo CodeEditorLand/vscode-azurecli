@@ -136,8 +136,8 @@
     "@types/jmespath": "0.15.0",
     "@types/node": "10.14.1",
     "@types/semver": "5.5.0",
-    "@types/vscode": "^1.75.0",
-    "typescript": "^5.3.3"
+    "@types/vscode": "1.75.0",
+    "typescript": "5.3.3"
   },
   "icon": "images/azure_icon.png",
   "l10n": "./l10n"
