@@ -14,7 +14,7 @@
     "url": "https://github.com/Microsoft/vscode-azurecli/issues"
   },
   "engines": {
-    "vscode": "^1.75.0"
+    "vscode": "1.75.0"
   },
   "categories": [
     "Programming Languages",
@@ -138,15 +138,15 @@
     "watch": "tsc -watch -p ./"
   },
   "devDependencies": {
-    "@types/jmespath": "0.15.0",
-    "@types/node": "10.14.1",
-    "@types/semver": "5.5.0",
-    "@types/vscode": "^1.75.0",
-    "typescript": "^5.3.3"
+    "@types/jmespath": "0.15.2",
+    "@types/node": "20.11.28",
+    "@types/semver": "7.5.8",
+    "@types/vscode": "1.87.0",
+    "typescript": "5.4.2"
   },
   "dependencies": {
-    "jmespath": "0.15.0",
-    "semver": "7.5.2",
-    "elegant-spinner": "2.0.0"
+    "jmespath": "0.16.0",
+    "semver": "7.6.0",
+    "elegant-spinner": "3.0.0"
   }
 }
