@@ -1,11 +1,29 @@
 {
-	"author": {
-		"email": "Hello@Playform.Cloud",
-		"name": "Playform",
-		"url": "https://playform.cloud"
-	},
+	"name": "azurecli",
+	"displayName": "Azure CLI Tools",
+	"version": "0.0.1",
+	"private": false,
+	"description": "Tools for developing and running commands of the Azure CLI.",
+	"homepage": "https://github.com/CodeEditorLand/Foundation#readme",
 	"bugs": {
 		"url": "https://github.com/CodeEditorLand/Foundation/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/CodeEditorLand/Foundation.git"
+	},
+	"license": "SEE LICENSE IN LICENSE",
+	"author": {
+		"name": "Playform",
+		"email": "Hello@Playform.Cloud",
+		"url": "https://playform.cloud"
+	},
+	"type": "module",
+	"main": "./out/src/extension",
+	"scripts": {
+		"compile": "tsc -p ./",
+		"prepublishOnly": "TypeScriptESBuild 'Source/**/*.ts'",
+		"watch": "tsc -watch -p ./"
 	},
 	"contributes": {
 		"commands": [
@@ -122,35 +140,17 @@
 		"jmespath": "0.16.0",
 		"semver": "7.6.0"
 	},
-	"description": "Tools for developing and running commands of the Azure CLI.",
 	"devDependencies": {
 		"@types/jmespath": "0.15.2",
 		"@types/node": "20.11.30",
 		"@types/semver": "7.5.8",
 		"@types/vscode": "1.87.0",
 		"typescript": "5.4.2",
-		"typescript-esbuild": ""
+		"typescript-esbuild": "0.4.5"
 	},
-	"displayName": "Azure CLI Tools",
-	"homepage": "https://github.com/CodeEditorLand/Foundation#readme",
-	"icon": "images/azure_icon.png",
-	"l10n": "./l10n",
-	"license": "SEE LICENSE IN LICENSE",
-	"main": "./out/src/extension",
-	"name": "azurecli",
-	"private": false,
 	"publishConfig": {
 		"access": "public"
 	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/CodeEditorLand/Foundation.git"
-	},
-	"scripts": {
-		"compile": "tsc -p ./",
-		"prepublishOnly": "TypeScriptESBuild 'Source/**/*.ts'",
-		"watch": "tsc -watch -p ./"
-	},
-	"type": "module",
-	"version": "0.0.1"
+	"icon": "images/azure_icon.png",
+	"l10n": "./l10n"
 }
