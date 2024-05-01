@@ -139,16 +139,16 @@
 		}
 	},
 	"dependencies": {
-		"elegant-spinner": "2.0.0",
-		"jmespath": "0.15.0",
-		"semver": "7.5.2"
+		"elegant-spinner": "3.0.0",
+		"jmespath": "0.16.0",
+		"semver": "7.6.0"
 	},
 	"devDependencies": {
 		"@playform/build": "0.0.7",
 		"@playform/document": "0.0.6",
-		"@types/jmespath": "0.15.0",
-		"@types/node": "10.14.1",
-		"@types/semver": "5.5.0"
+		"@types/jmespath": "0.15.2",
+		"@types/node": "20.12.7",
+		"@types/semver": "7.5.8"
 	},
 	"publishConfig": {
 		"access": "public"
