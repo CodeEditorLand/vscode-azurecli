@@ -40,7 +40,6 @@ out
 *.pyc
 
 # OS
-.DS_Store
 
 # Workspace symbols
 .vscode/tags
