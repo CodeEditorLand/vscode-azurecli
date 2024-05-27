@@ -23,28 +23,22 @@
 	],
 	"repository": {
 		"subcommand": {
-			"patterns": [
-				{
-					"name": "storage.type.azcli",
-					"match": "^([^\\s#-]-+|[^#-])+"
-				}
-			]
+			"patterns": [{
+				"name": "storage.type.azcli",
+				"match": "^([^\\s#-]-+|[^#-])+"
+			}]
 		},
 		"argumentName": {
-			"patterns": [
-				{
-					"name": "variable.other.azcli",
-					"match": "-[^\\s#]*\\s*"
-				}
-			]
+			"patterns": [{
+				"name": "variable.other.azcli",
+				"match": "-[^\\s#]*\\s*"
+			}]
 		},
 		"argumentValueUnquoted": {
-			"patterns": [
-				{
-					"name": "string.unquoted.azcli",
-					"match": "[^\\s#]+\\s*"
-				}
-			]
+			"patterns": [{
+				"name": "string.unquoted.azcli",
+				"match": "[^\\s#]+\\s*"
+			}]
 		},
 		"argumentValueSingleQuoted": {
 			"name": "string.quoted.single.azcli",
@@ -69,12 +63,10 @@
 			]
 		},
 		"comments": {
-			"patterns": [
-				{
-					"name": "comment.line.hash.azcli",
-					"match": "\\#.*"
-				}
-			]
+			"patterns": [{
+				"name": "comment.line.hash.azcli",
+				"match": "\\#.*"
+			}]
 		}
 	},
 	"scopeName": "source.azcli"

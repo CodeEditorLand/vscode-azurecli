@@ -27,6 +27,7 @@ coverage
 build/Release
 
 # Dependency directories
+node_modules
 jspm_packages
 
 # Optional npm cache directory
@@ -40,6 +41,7 @@ out
 *.pyc
 
 # OS
+.DS_Store
 
 # Workspace symbols
 .vscode/tags
