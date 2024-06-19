@@ -1,131 +1,152 @@
 {
-	"name": "azurecli",
-	"displayName": "Azure CLI Tools",
-	"description": "Tools for developing and running commands of the Azure CLI.",
-	"main": "./out/src/extension",
-	"scripts": {
-		"compile": "tsc -p ./"
-	},
-	"contributes": {
-		"commands": [
-			{
-				"category": "Azure CLI",
-				"command": "ms-azurecli.runLineInTerminal",
-				"title": "%runLineInTerminal.title%"
-			},
-			{
-				"category": "Azure CLI",
-				"command": "ms-azurecli.runLineInEditor",
-				"title": "%runLineInEditor.title%"
-			},
-			{
-				"category": "Azure CLI",
-				"command": "ms-azurecli.toggleLiveQuery",
-				"title": "%toggleLiveQuery.title%"
-			},
-			{
-				"category": "Azure CLI",
-				"command": "ms-azurecli.installAzureCLI",
-				"title": "%installAzureCLI.title%"
-			}
-		],
-		"configuration": {
-			"properties": {
-				"azureCLI.lineContinuationCharacter": {
-					"default": "",
-					"description": "%azureCLI.lineContinuationCharacter.description%",
-					"scope": "resource",
-					"type": "string"
-				},
-				"azureCLI.showResultInNewEditor": {
-					"default": false,
-					"description": "%azureCLI.showResultInNewEditor.description%",
-					"scope": "resource",
-					"type": "boolean"
-				}
-			},
-			"title": "%configuration.title%",
-			"type": "object"
-		},
-		"grammars": [
-			{
-				"language": "azcli",
-				"path": "./syntaxes/azcli.tmLanguage.json",
-				"scopeName": "source.azcli"
-			}
-		],
-		"keybindings": [
-			{
-				"command": "ms-azurecli.runLineInTerminal",
-				"key": "ctrl+'",
-				"mac": "cmd+'",
-				"when": "editorTextFocus && editorLangId == 'azcli'"
-			},
-			{
-				"command": "ms-azurecli.runLineInEditor",
-				"key": "ctrl+shift+'",
-				"mac": "cmd+shift+'",
-				"when": "editorTextFocus && editorLangId == 'azcli'"
-			},
-			{
-				"command": "ms-azurecli.toggleLiveQuery",
-				"key": "ctrl+;",
-				"mac": "cmd+;",
-				"when": "editorTextFocus && editorLangId == 'azcli'"
-			}
-		],
-		"languages": [
-			{
-				"aliases": [
-					"Azure CLI Scrapbook",
-					"azcli"
-				],
-				"configuration": "./language-configuration.json",
-				"extensions": [
-					".azcli"
-				],
-				"id": "azcli"
-			}
-		],
-		"menus": {
-			"commandPalette": [
-				{
-					"command": "ms-azurecli.runLineInTerminal",
-					"when": "editorLangId == 'azcli'"
-				},
-				{
-					"command": "ms-azurecli.runLineInEditor",
-					"when": "editorLangId == 'azcli'"
-				},
-				{
-					"command": "ms-azurecli.toggleLiveQuery",
-					"when": "editorLangId == 'azcli'"
-				}
-			],
-			"editor/context": [
-				{
-					"command": "ms-azurecli.runLineInTerminal",
-					"group": "2_run",
-					"when": "editorLangId == 'azcli'"
-				},
-				{
-					"command": "ms-azurecli.runLineInEditor",
-					"group": "2_run",
-					"when": "editorLangId == 'azcli'"
-				}
-			]
-		}
-	},
-	"dependencies": {
-		"elegant-spinner": "3.0.0",
-		"jmespath": "0.16.0",
-		"semver": "7.6.2"
-	},
-	"devDependencies": {
-		"@types/jmespath": "0.15.2",
-		"@types/node": "20.14.5",
-		"@types/semver": "7.5.8"
-	},
-	"icon": "images/azure_icon.png",
-	"l10n": "./l10n"
+  "name": "azurecli",
+  "displayName": "Azure CLI Tools",
+  "description": "Tools for developing and running commands of the Azure CLI.",
+  "version": "0.6.0",
+  "icon": "images/azure_icon.png",
+  "publisher": "ms-vscode",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Microsoft/vscode-azurecli.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Microsoft/vscode-azurecli/issues"
+  },
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets",
+    "Azure"
+  ],
+  "main": "./out/src/extension",
+  "l10n": "./l10n",
+  "contributes": {
+    "languages": [
+      {
+        "id": "azcli",
+        "aliases": [
+          "Azure CLI Scrapbook",
+          "azcli"
+        ],
+        "extensions": [
+          ".azcli"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "azcli",
+        "scopeName": "source.azcli",
+        "path": "./syntaxes/azcli.tmLanguage.json"
+      }
+    ],
+    "commands": [
+      {
+        "category": "Azure CLI",
+        "command": "ms-azurecli.runLineInTerminal",
+        "title": "%runLineInTerminal.title%"
+      },
+      {
+        "category": "Azure CLI",
+        "command": "ms-azurecli.runLineInEditor",
+        "title": "%runLineInEditor.title%"
+      },
+      {
+        "category": "Azure CLI",
+        "command": "ms-azurecli.toggleLiveQuery",
+        "title": "%toggleLiveQuery.title%"
+      },
+      {
+        "category": "Azure CLI",
+        "command": "ms-azurecli.installAzureCLI",
+        "title": "%installAzureCLI.title%"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "ms-azurecli.runLineInTerminal",
+        "key": "ctrl+'",
+        "mac": "cmd+'",
+        "when": "editorTextFocus && editorLangId == 'azcli'"
+      },
+      {
+        "command": "ms-azurecli.runLineInEditor",
+        "key": "ctrl+shift+'",
+        "mac": "cmd+shift+'",
+        "when": "editorTextFocus && editorLangId == 'azcli'"
+      },
+      {
+        "command": "ms-azurecli.toggleLiveQuery",
+        "key": "ctrl+;",
+        "mac": "cmd+;",
+        "when": "editorTextFocus && editorLangId == 'azcli'"
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "%configuration.title%",
+      "properties": {
+        "azureCLI.showResultInNewEditor": {
+          "type": "boolean",
+          "default": false,
+          "scope": "resource",
+          "description": "%azureCLI.showResultInNewEditor.description%"
+        },
+        "azureCLI.lineContinuationCharacter": {
+          "type": "string",
+          "default": "",
+          "scope": "resource",
+          "description": "%azureCLI.lineContinuationCharacter.description%"
+        }
+      }
+    },
+    "menus": {
+      "editor/context": [
+        {
+          "command": "ms-azurecli.runLineInTerminal",
+          "group": "2_run",
+          "when": "editorLangId == 'azcli'"
+        },
+        {
+          "command": "ms-azurecli.runLineInEditor",
+          "group": "2_run",
+          "when": "editorLangId == 'azcli'"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "ms-azurecli.runLineInTerminal",
+          "when": "editorLangId == 'azcli'"
+        },
+        {
+          "command": "ms-azurecli.runLineInEditor",
+          "when": "editorLangId == 'azcli'"
+        },
+        {
+          "command": "ms-azurecli.toggleLiveQuery",
+          "when": "editorLangId == 'azcli'"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/jmespath": "0.15.0",
+    "@types/node": "10.14.1",
+    "@types/semver": "5.5.0",
+    "@types/vscode": "^1.75.0",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "jmespath": "0.15.0",
+    "semver": "7.5.2",
+    "elegant-spinner": "2.0.0"
+  }
 }
