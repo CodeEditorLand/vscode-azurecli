@@ -117,14 +117,14 @@
 		}
 	},
 	"dependencies": {
-		"elegant-spinner": "2.0.0",
-		"jmespath": "0.15.0",
-		"semver": "7.5.2"
+		"elegant-spinner": "3.0.0",
+		"jmespath": "0.16.0",
+		"semver": "7.6.3"
 	},
 	"devDependencies": {
-		"@types/jmespath": "0.15.0",
-		"@types/node": "10.14.1",
-		"@types/semver": "5.5.0"
+		"@types/jmespath": "0.15.2",
+		"@types/node": "20.14.11",
+		"@types/semver": "7.5.8"
 	},
 	"icon": "images/azure_icon.png",
 	"l10n": "./l10n"
