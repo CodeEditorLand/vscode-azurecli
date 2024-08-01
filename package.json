@@ -110,15 +110,15 @@
 		}
 	},
 	"dependencies": {
-		"elegant-spinner": "2.0.0",
-		"jmespath": "0.15.0",
-		"semver": "7.5.2"
+		"elegant-spinner": "3.0.0",
+		"jmespath": "0.16.0",
+		"semver": "7.6.3"
 	},
 	"description": "Tools for developing and running commands of the Azure CLI.",
 	"devDependencies": {
-		"@types/jmespath": "0.15.0",
-		"@types/node": "10.14.1",
-		"@types/semver": "5.5.0"
+		"@types/jmespath": "0.15.2",
+		"@types/node": "22.0.2",
+		"@types/semver": "7.5.8"
 	},
 	"displayName": "Azure CLI Tools",
 	"icon": "images/azure_icon.png",
