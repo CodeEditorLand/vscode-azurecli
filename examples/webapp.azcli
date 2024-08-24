@@ -15,7 +15,7 @@ az configure --defaults web=tryout-web
 az webapp deployment source config \
 	--repo-url "https://github.com/Azure-Samples/app-service-web-html-get-started.git" \
 	--branch master \
-	--manual-integration 
+	--manual-integration
 # Or from docker image
 az webapp config container set --docker-custom-image-name tutum/hello-world
 az webapp browse
