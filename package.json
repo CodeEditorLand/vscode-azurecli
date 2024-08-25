@@ -1,11 +1,4 @@
 {
-	"name": "azurecli",
-	"displayName": "Azure CLI Tools",
-	"description": "Tools for developing and running commands of the Azure CLI.",
-	"main": "./out/src/extension",
-	"scripts": {
-		"compile": "tsc -p ./"
-	},
 	"contributes": {
 		"commands": [
 			{
@@ -121,11 +114,18 @@
 		"jmespath": "0.16.0",
 		"semver": "7.6.3"
 	},
+	"description": "Tools for developing and running commands of the Azure CLI.",
 	"devDependencies": {
 		"@types/jmespath": "0.15.2",
 		"@types/node": "22.4.0",
 		"@types/semver": "7.5.8"
 	},
+	"displayName": "Azure CLI Tools",
 	"icon": "images/azure_icon.png",
-	"l10n": "./l10n"
+	"l10n": "./l10n",
+	"main": "./out/src/extension",
+	"name": "azurecli",
+	"scripts": {
+		"compile": "tsc -p ./"
+	}
 }
