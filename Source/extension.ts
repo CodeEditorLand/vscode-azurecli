@@ -55,6 +55,7 @@ export function activate(context: ExtensionContext) {
 			new AzHoverProvider(azService),
 		),
 	);
+
 	const status = new StatusBarInfo(azService);
 	context.subscriptions.push(status);
 	context.subscriptions.push(new RunLineInTerminal());
@@ -84,8 +85,11 @@ class AzCompletionItemProvider implements CompletionItemProvider {
 		token: CancellationToken,
 	): ProviderResult<CompletionItem[] | CompletionList> {
 		const line = document.lineAt(position).text;
+
 		const parsed = parse(line);
+
 		const start = parsed.subcommand[0];
+
 		if (
 			start &&
 			start.offset + start.length < position.character &&
@@ -94,21 +98,29 @@ class AzCompletionItemProvider implements CompletionItemProvider {
 			return;
 		}
 		const node = findNode(parsed, position.character - 1);
+
 		if (node && node.kind === "comment") {
 			return;
 		}
 		// TODO: Use the above instead of parsing again.
 		const upToCursor = line.substr(0, position.character);
+
 		const rawSubcommand = (/^\s*(([^-\s][^\s]*\s+)*)/.exec(upToCursor) ||
 			[])[1];
+
 		if (typeof rawSubcommand !== "string") {
 			return Promise.resolve([]);
 		}
 		const subcommand = rawSubcommand.trim().split(/\s+/);
+
 		const args = this.getArguments(line);
+
 		const argument = (/\s(--?[^\s]+)\s+[^-\s]*$/.exec(upToCursor) || [])[1];
+
 		const prefix = (/(^|\s)([^\s]*)$/.exec(upToCursor) || [])[2];
+
 		const lead = /^-*/.exec(prefix)![0];
+
 		return this.azService
 			.getCompletions(
 				subcommand[0] === "az"
@@ -134,6 +146,7 @@ class AzCompletionItemProvider implements CompletionItemProvider {
 							name,
 							completionKinds[kind],
 						);
+
 						if (snippet) {
 							item.insertText = new SnippetString(snippet);
 						} else if (lead) {
@@ -156,7 +169,9 @@ class AzCompletionItemProvider implements CompletionItemProvider {
 
 	private getArguments(line: string) {
 		const args: Arguments = {};
+
 		let name: string | undefined;
+
 		for (const match of allMatches(
 			/-[^\s"']*|"[^"]*"|'[^']*'|[^\s"']+/g,
 			line,
@@ -164,6 +179,7 @@ class AzCompletionItemProvider implements CompletionItemProvider {
 		)) {
 			if (match.startsWith("-")) {
 				name = match as string;
+
 				if (!(name in args)) {
 					args[name] = null;
 				}
@@ -187,18 +203,24 @@ class AzHoverProvider implements HoverProvider {
 		token: CancellationToken,
 	): ProviderResult<Hover> {
 		const line = document.lineAt(position.line).text;
+
 		const command = parse(line);
+
 		const list = command.subcommand;
+
 		if (list.length && list[0].text === "az") {
 			const node = findNode(command, position.character);
+
 			if (node) {
 				if (node.kind === "subcommand") {
 					const i = list.indexOf(node);
+
 					if (i > 0) {
 						const subcommand = list
 							.slice(1, i + 1)
 							.map((node) => node.text)
 							.join(" ");
+
 						return this.azService
 							.getHover(
 								{ subcommand },
@@ -223,6 +245,7 @@ class AzHoverProvider implements HoverProvider {
 						.slice(1)
 						.map((node) => node.text)
 						.join(" ");
+
 					return this.azService
 						.getHover(
 							{ subcommand, argument: node.text },
@@ -316,10 +339,14 @@ class RunLineInEditor {
 	private runningCommandCount: number = 0;
 	private run(source: TextEditor) {
 		this.refreshContinuationCharacter();
+
 		const command = this.getSelectedCommand(source);
+
 		if (command.length > 0) {
 			this.runningCommandCount += 1;
+
 			const t0 = Date.now();
+
 			if (this.runningCommandCount === 1) {
 				this.statusBarItemText = l10n.t(
 					"Azure CLI: Waiting for response",
@@ -378,6 +405,7 @@ class RunLineInEditor {
 		const settingsContinuationCharacter = workspace
 			.getConfiguration("azureCLI", null)
 			.get<string>("lineContinuationCharacter", "");
+
 		if (settingsContinuationCharacter.length > 0) {
 			this.continuationCharacter = settingsContinuationCharacter;
 		} else {
@@ -391,12 +419,14 @@ class RunLineInEditor {
 
 		if (source.selection.isEmpty) {
 			var lineNumber = source.selection.active.line;
+
 			if (source.document.lineAt(lineNumber).text.length === 0) {
 				window.showInformationMessage<any>(
 					l10n.t(
 						"Please put the cursor on a line that contains a command (or part of a command).",
 					),
 				);
+
 				return "";
 			}
 
@@ -427,7 +457,9 @@ class RunLineInEditor {
 		} else {
 			// execute only the selected text
 			const selectionStart = source.selection.start;
+
 			const selectionEnd = source.selection.end;
+
 			if (selectionStart.line === selectionEnd.line) {
 				// single line command
 				return this.stripComments(
@@ -442,6 +474,7 @@ class RunLineInEditor {
 						.lineAt(selectionStart.line)
 						.text.substring(selectionStart.character),
 				);
+
 				for (
 					let index = selectionStart.line + 1;
 					index <= selectionEnd.line;
@@ -459,6 +492,7 @@ class RunLineInEditor {
 						window.showErrorMessage<any>(
 							l10n.t("Multiple command selection not supported"),
 						);
+
 						return "";
 					}
 
@@ -481,6 +515,7 @@ class RunLineInEditor {
 		}
 
 		var i = text.indexOf("#");
+
 		if (i !== -1) {
 			// account for hash characters that are embedded in strings in the JMESPath query
 			while (this.isEmbeddedInString(text, i)) {
@@ -542,6 +577,7 @@ class RunLineInEditor {
 		const showResultInNewEditor = workspace
 			.getConfiguration("azureCLI", null)
 			.get<boolean>("showResultInNewEditor", false);
+
 		if (this.resultDocument && !showResultInNewEditor) {
 			return Promise.resolve(this.resultDocument);
 		}
@@ -562,12 +598,17 @@ class RunLineInEditor {
 			e.contentChanges.length === 1
 		) {
 			const change = e.contentChanges[0];
+
 			const range = change.range;
+
 			if (range.start.line === range.end.line) {
 				const line = e.document.lineAt(range.start.line).text;
+
 				const query = this.getQueryArgument(line);
+
 				if (query !== this.query) {
 					this.query = query;
+
 					if (this.queryEnabled) {
 						this.updateResult();
 					}
@@ -581,6 +622,7 @@ class RunLineInEditor {
 			const resultEditor = window.visibleTextEditors.find(
 				(editor) => editor.document === this.resultDocument,
 			);
+
 			if (resultEditor) {
 				try {
 					const result =
@@ -647,6 +689,7 @@ class StatusBarInfo {
 
 	public update() {
 		const texts: string[] = [];
+
 		if (this.status && this.status.message) {
 			texts.push(this.status.message);
 		}
@@ -654,7 +697,9 @@ class StatusBarInfo {
 			texts.push("Live Query");
 		}
 		this.info.text = texts.join(", ");
+
 		const editor = window.activeTextEditor;
+
 		const show =
 			this.info.text && editor && editor.document.languageId === "azcli";
 		this.info[show ? "show" : "hide"]();
@@ -669,6 +714,7 @@ function allMatches(regex: RegExp, string: string, group: number) {
 	return {
 		[Symbol.iterator]: function* () {
 			let m;
+
 			while ((m = regex.exec(string))) {
 				yield m[group];
 			}
@@ -678,12 +724,15 @@ function allMatches(regex: RegExp, string: string, group: number) {
 
 function replaceContent(editor: TextEditor, content: string) {
 	const document = editor.document;
+
 	const all = new Range(
 		new Position(0, 0),
 		document.lineAt(document.lineCount - 1).range.end,
 	);
+
 	const edit = new WorkspaceEdit();
 	edit.replace(document.uri, all, content);
+
 	return workspace
 		.applyEdit(edit)
 		.then(() => (editor.selections = [new Selection(0, 0, 0, 0)]));
@@ -693,10 +742,12 @@ async function azNotFound(wrongVersion: boolean): Promise<void> {
 	const message = wrongVersion
 		? l10n.t("'az' >= 2.0.5 required, please update your installation.")
 		: l10n.t("'az' not found on PATH, please make sure it is installed.");
+
 	const result = await window.showInformationMessage<any>(message, {
 		title: l10n.t("Documentation"),
 		run: installAzureCLI,
 	});
+
 	if (result && result.run) {
 		result.run();
 	}

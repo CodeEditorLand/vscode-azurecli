@@ -21,6 +21,7 @@ export interface Completion {
 	name: string;
 	kind: CompletionKind;
 	detail?: string;
+
 	documentation?: string;
 	snippet?: string;
 	sortText?: string;
@@ -87,6 +88,7 @@ export class AzService {
 			return this.send<CompletionQuery, Completion[]>(query, onCancel);
 		} catch (err) {
 			console.error(err);
+
 			return [];
 		}
 	}
@@ -113,6 +115,7 @@ export class AzService {
 		onCancel?: (handle: () => void) => void,
 	): Promise<R> {
 		const process = await this.getProcess();
+
 		return new Promise<R>((resolve, reject) => {
 			if (onCancel) {
 				onCancel(() => reject("canceled"));
@@ -129,7 +132,9 @@ export class AzService {
 					}
 				}
 			};
+
 			const request: Message<T> = { sequence, data };
+
 			const str = JSON.stringify(request);
 			process.stdin.write(str + "\n", "utf8");
 		});
@@ -141,11 +146,14 @@ export class AzService {
 		}
 		return (this.process = (async () => {
 			const { stdout } = await exec("az --version");
+
 			let version = (/azure-cli\s+\(([^)]+)\)/m.exec(stdout) ||
 				/azure-cli\s+(\S+)/m.exec(stdout) ||
 				[])[1];
+
 			if (version) {
 				const r = /[^-][a-z]/gi;
+
 				if (r.exec(version)) {
 					version =
 						version.substr(0, r.lastIndex - 1) +
@@ -163,10 +171,13 @@ export class AzService {
 			const pythonLocation = (/^Python location '([^']*)'/m.exec(
 				stdout,
 			) || [])[1];
+
 			const processOptions = await this.getSpawnProcessOptions();
+
 			return this.spawn(pythonLocation, processOptions);
 		})().catch((err) => {
 			this.process = undefined;
+
 			throw err;
 		}));
 	}
@@ -175,17 +186,24 @@ export class AzService {
 		if (process.platform === "darwin") {
 			try {
 				const which = await exec("which az");
+
 				const binPath = await realpath(which.stdout.trim());
+
 				const cellarBasePath = "/usr/local/Cellar/azure-cli/";
+
 				if (binPath.startsWith(cellarBasePath)) {
 					const installPath = binPath.substr(
 						0,
 						binPath.indexOf("/", cellarBasePath.length),
 					);
+
 					const libPath = `${installPath}/libexec/lib`;
+
 					const entries = await readdir(libPath);
+
 					for (const entry of entries) {
 						const packagesPath = `${libPath}/${entry}/site-packages`;
+
 						if (await exists(packagesPath)) {
 							return { env: { "PYTHONPATH": packagesPath } };
 						}
@@ -210,12 +228,17 @@ export class AzService {
 		process.stdout.setEncoding("utf8");
 		process.stdout.on("data", (data) => {
 			this.data += data;
+
 			const nl = this.data.indexOf("\n");
+
 			if (nl !== -1) {
 				const line = this.data.substr(0, nl);
 				this.data = this.data.substr(nl + 1);
+
 				const response = JSON.parse(line);
+
 				const listener = this.listeners[response.sequence];
+
 				if (listener) {
 					delete this.listeners[response.sequence];
 					listener(undefined, response);
@@ -232,6 +255,7 @@ export class AzService {
 		process.on("exit", (code, signal) => {
 			console.error(`Exit code ${code}, signal ${signal}`);
 			this.process = undefined;
+
 			for (const sequence in this.listeners) {
 				const listener = this.listeners[sequence];
 				delete this.listeners[sequence];
@@ -241,6 +265,7 @@ export class AzService {
 				);
 			}
 		});
+
 		return process;
 	}
 }

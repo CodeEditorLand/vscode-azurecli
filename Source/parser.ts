@@ -27,14 +27,22 @@ export interface Command {
 
 export function parse(line: string) {
 	const regex = /"[^"]*"|'[^']*'|\#.*|[^\s"'#]+/g;
+
 	const tokens: Token[] = [];
+
 	let subcommand = true;
+
 	let m;
+
 	while ((m = regex.exec(line))) {
 		const text = m[0];
+
 		const length = text.length;
+
 		const isArgument = text.startsWith("-");
+
 		const isComment = text.startsWith("#");
+
 		if (isArgument || isComment) {
 			subcommand = false;
 		}
@@ -57,16 +65,21 @@ export function parse(line: string) {
 		subcommand: [],
 		arguments: [],
 	};
+
 	const args = command.arguments;
 
 	for (const token of tokens) {
 		switch (token.kind) {
 			case "subcommand":
 				command.subcommand.push(token);
+
 				break;
+
 			case "argument_name":
 				args.push({ name: token });
+
 				break;
+
 			case "argument_value":
 				if (args.length && !("value" in args[args.length - 1])) {
 					args[args.length - 1].value = token;
@@ -74,9 +87,12 @@ export function parse(line: string) {
 					args.push({ value: token });
 				}
 				break;
+
 			case "comment":
 				command.comment = token;
+
 				break;
+
 			default:
 				never(token.kind);
 		}
