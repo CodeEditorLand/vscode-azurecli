@@ -42,6 +42,7 @@ import { exec } from "./utils";
 
 export function activate(context: ExtensionContext) {
 	const azService = new AzService(azNotFound);
+
 	context.subscriptions.push(
 		languages.registerCompletionItemProvider(
 			"azcli",
@@ -49,6 +50,7 @@ export function activate(context: ExtensionContext) {
 			" ",
 		),
 	);
+
 	context.subscriptions.push(
 		languages.registerHoverProvider(
 			"azcli",
@@ -57,9 +59,13 @@ export function activate(context: ExtensionContext) {
 	);
 
 	const status = new StatusBarInfo(azService);
+
 	context.subscriptions.push(status);
+
 	context.subscriptions.push(new RunLineInTerminal());
+
 	context.subscriptions.push(new RunLineInEditor(status));
+
 	context.subscriptions.push(
 		commands.registerCommand(
 			"ms-azurecli.installAzureCLI",
@@ -97,6 +103,7 @@ class AzCompletionItemProvider implements CompletionItemProvider {
 		) {
 			return;
 		}
+
 		const node = findNode(parsed, position.character - 1);
 
 		if (node && node.kind === "comment") {
@@ -111,6 +118,7 @@ class AzCompletionItemProvider implements CompletionItemProvider {
 		if (typeof rawSubcommand !== "string") {
 			return Promise.resolve([]);
 		}
+
 		const subcommand = rawSubcommand.trim().split(/\s+/);
 
 		const args = this.getArguments(line);
@@ -152,15 +160,19 @@ class AzCompletionItemProvider implements CompletionItemProvider {
 						} else if (lead) {
 							item.insertText = name.substr(lead.length);
 						}
+
 						if (detail) {
 							item.detail = detail;
 						}
+
 						if (documentation) {
 							item.documentation = documentation;
 						}
+
 						if (sortText) {
 							item.sortText = sortText;
 						}
+
 						return item;
 					},
 				),
@@ -187,9 +199,11 @@ class AzCompletionItemProvider implements CompletionItemProvider {
 				if (name) {
 					args[name] = match;
 				}
+
 				name = undefined;
 			}
 		}
+
 		return args;
 	}
 }
@@ -295,14 +309,23 @@ class RunLineInTerminal {
 
 class RunLineInEditor {
 	private resultDocument: TextDocument | undefined;
+
 	private parsedResult: object | undefined;
+
 	private queryEnabled = false;
+
 	private query: string | undefined;
+
 	private disposables: Disposable[] = [];
+
 	private commandRunningStatusBarItem: StatusBarItem;
+
 	private statusBarUpdateInterval!: NodeJS.Timer;
+
 	private statusBarSpinner = spinner();
+
 	private hideStatusBarItemTimeout!: NodeJS.Timeout;
+
 	private statusBarItemText: string = "";
 	// using backtick (`) as continuation character on Windows, backslash (\) on other systems
 	private continuationCharacter: string =
@@ -315,17 +338,20 @@ class RunLineInEditor {
 				(editor) => this.toggleQuery(editor),
 			),
 		);
+
 		this.disposables.push(
 			commands.registerTextEditorCommand(
 				"ms-azurecli.runLineInEditor",
 				(editor) => this.run(editor),
 			),
 		);
+
 		this.disposables.push(
 			workspace.onDidCloseTextDocument((document) =>
 				this.close(document),
 			),
 		);
+
 		this.disposables.push(
 			workspace.onDidChangeTextDocument((event) => this.change(event)),
 		);
@@ -333,10 +359,12 @@ class RunLineInEditor {
 		this.commandRunningStatusBarItem = window.createStatusBarItem(
 			StatusBarAlignment.Left,
 		);
+
 		this.disposables.push(this.commandRunningStatusBarItem);
 	}
 
 	private runningCommandCount: number = 0;
+
 	private run(source: TextEditor) {
 		this.refreshContinuationCharacter();
 
@@ -351,6 +379,7 @@ class RunLineInEditor {
 				this.statusBarItemText = l10n.t(
 					"Azure CLI: Waiting for response",
 				);
+
 				this.statusBarUpdateInterval = setInterval(() => {
 					if (this.runningCommandCount === 1) {
 						this.commandRunningStatusBarItem.text = `${this.statusBarItemText} ${this.statusBarSpinner()}`;
@@ -359,10 +388,13 @@ class RunLineInEditor {
 					}
 				}, 50);
 			}
+
 			this.commandRunningStatusBarItem.show();
+
 			clearTimeout(this.hideStatusBarItemTimeout);
 
 			this.parsedResult = undefined;
+
 			this.query = undefined; // TODO
 			return this.findResultDocument()
 				.then((document) =>
@@ -449,10 +481,12 @@ class RunLineInEditor {
 			while (command.trim().endsWith(this.continuationCharacter)) {
 				// concatenate all lines into a single command
 				lineNumber++;
+
 				command =
 					command.trim().slice(0, -1) +
 					this.stripComments(source.document.lineAt(lineNumber).text);
 			}
+
 			return command;
 		} else {
 			// execute only the selected text
@@ -477,7 +511,9 @@ class RunLineInEditor {
 
 				for (
 					let index = selectionStart.line + 1;
+
 					index <= selectionEnd.line;
+
 					index++
 				) {
 					if (command.trim().endsWith(this.continuationCharacter)) {
@@ -504,6 +540,7 @@ class RunLineInEditor {
 						command = command + line;
 					}
 				}
+
 				return command;
 			}
 		}
@@ -521,6 +558,7 @@ class RunLineInEditor {
 			while (this.isEmbeddedInString(text, i)) {
 				i = text.indexOf("#", i + 1); // find next #
 			}
+
 			return text.substring(0, i);
 		}
 
@@ -541,18 +579,22 @@ class RunLineInEditor {
 				) {
 					return true; // the given position is embedded in a string literal
 				}
+
 				stringStart = text.indexOf("'", stringEnd + 1);
 			}
 		}
+
 		return false;
 	}
 
 	private commandFinished(startTime: number) {
 		this.runningCommandCount -= 1;
+
 		this.statusBarItemText = l10n.t(
 			"Azure CLI: Executed in {0} milliseconds",
 			Date.now() - startTime,
 		);
+
 		this.commandRunningStatusBarItem.text = this.statusBarItemText;
 
 		if (this.runningCommandCount === 0) {
@@ -568,8 +610,11 @@ class RunLineInEditor {
 
 	private toggleQuery(source: TextEditor) {
 		this.queryEnabled = !this.queryEnabled;
+
 		this.status.liveQuery = this.queryEnabled;
+
 		this.status.update();
+
 		this.updateResult();
 	}
 
@@ -581,6 +626,7 @@ class RunLineInEditor {
 		if (this.resultDocument && !showResultInNewEditor) {
 			return Promise.resolve(this.resultDocument);
 		}
+
 		return workspace
 			.openTextDocument({ language: "json" })
 			.then((document) => (this.resultDocument = document));
@@ -629,6 +675,7 @@ class RunLineInEditor {
 						this.queryEnabled && this.query
 							? jmespath.search(this.parsedResult, this.query)
 							: this.parsedResult;
+
 					replaceContent(
 						resultEditor,
 						JSON.stringify(result, null, "    "),
@@ -657,22 +704,28 @@ class RunLineInEditor {
 
 class StatusBarInfo {
 	private info: StatusBarItem;
+
 	private status?: Status;
+
 	public liveQuery = false;
 
 	private timer?: NodeJS.Timer;
+
 	private disposables: Disposable[] = [];
 
 	constructor(private azService: AzService) {
 		this.disposables.push(
 			(this.info = window.createStatusBarItem(StatusBarAlignment.Left)),
 		);
+
 		this.disposables.push(
 			window.onDidChangeActiveTextEditor(() => this.update()),
 		);
+
 		this.disposables.push({
 			dispose: () => this.timer && clearTimeout(this.timer),
 		});
+
 		this.refresh().catch(console.error);
 	}
 
@@ -680,8 +733,11 @@ class StatusBarInfo {
 		if (this.timer) {
 			clearTimeout(this.timer);
 		}
+
 		this.status = await this.azService.getStatus();
+
 		this.update();
+
 		this.timer = setTimeout(() => {
 			this.refresh().catch(console.error);
 		}, 5000);
@@ -693,15 +749,18 @@ class StatusBarInfo {
 		if (this.status && this.status.message) {
 			texts.push(this.status.message);
 		}
+
 		if (this.liveQuery) {
 			texts.push("Live Query");
 		}
+
 		this.info.text = texts.join(", ");
 
 		const editor = window.activeTextEditor;
 
 		const show =
 			this.info.text && editor && editor.document.languageId === "azcli";
+
 		this.info[show ? "show" : "hide"]();
 	}
 
@@ -731,6 +790,7 @@ function replaceContent(editor: TextEditor, content: string) {
 	);
 
 	const edit = new WorkspaceEdit();
+
 	edit.replace(document.uri, all, content);
 
 	return workspace

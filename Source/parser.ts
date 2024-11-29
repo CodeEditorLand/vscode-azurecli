@@ -8,20 +8,27 @@ export type TokenKind =
 
 export interface Token {
 	kind: TokenKind;
+
 	offset: number;
+
 	length: number;
+
 	text: string;
 }
 
 export interface Argument {
 	name?: Token;
+
 	value?: Token;
 }
 
 export interface Command {
 	tokens: Token[];
+
 	subcommand: Token[];
+
 	arguments: Argument[];
+
 	comment?: Token;
 }
 
@@ -46,6 +53,7 @@ export function parse(line: string) {
 		if (isArgument || isComment) {
 			subcommand = false;
 		}
+
 		tokens.push({
 			kind: subcommand
 				? "subcommand"
@@ -86,6 +94,7 @@ export function parse(line: string) {
 				} else {
 					args.push({ value: token });
 				}
+
 				break;
 
 			case "comment":

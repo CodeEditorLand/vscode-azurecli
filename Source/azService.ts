@@ -19,11 +19,15 @@ export type CompletionKind =
 
 export interface Completion {
 	name: string;
+
 	kind: CompletionKind;
+
 	detail?: string;
 
 	documentation?: string;
+
 	snippet?: string;
+
 	sortText?: string;
 }
 
@@ -31,7 +35,9 @@ export type Arguments = Record<string, string | null>;
 
 export interface CompletionQuery {
 	subcommand?: string;
+
 	argument?: string;
+
 	arguments?: Arguments;
 }
 
@@ -49,33 +55,40 @@ export interface HoverText {
 
 export interface Command {
 	subcommand: string;
+
 	argument?: string;
 }
 
 interface HoverQuery {
 	request: "hover";
+
 	command: Command;
 }
 
 interface Message<T> {
 	sequence: number;
+
 	data: T;
 }
 
 export class AzService {
 	private process: Promise<ChildProcess> | undefined;
+
 	private data = "";
+
 	private listeners: {
 		[sequence: number]: (
 			err: undefined | any,
 			response: Message<any> | undefined,
 		) => void;
 	} = {};
+
 	private nextSequenceNumber = 1;
 
 	constructor(azNotFound: (wrongVersion: boolean) => void) {
 		this.getProcess().catch((err) => {
 			console.log(err);
+
 			azNotFound(err === "wrongVersion");
 		});
 	}
@@ -120,7 +133,9 @@ export class AzService {
 			if (onCancel) {
 				onCancel(() => reject("canceled"));
 			}
+
 			const sequence = this.nextSequenceNumber++;
+
 			this.listeners[sequence] = (err, response) => {
 				if (err) {
 					reject(err);
@@ -136,6 +151,7 @@ export class AzService {
 			const request: Message<T> = { sequence, data };
 
 			const str = JSON.stringify(request);
+
 			process.stdin.write(str + "\n", "utf8");
 		});
 	}
@@ -144,6 +160,7 @@ export class AzService {
 		if (this.process) {
 			return this.process;
 		}
+
 		return (this.process = (async () => {
 			const { stdout } = await exec("az --version");
 
@@ -161,6 +178,7 @@ export class AzService {
 						version.substr(r.lastIndex - 1);
 				}
 			}
+
 			if (
 				version &&
 				semver.valid(version) &&
@@ -168,6 +186,7 @@ export class AzService {
 			) {
 				throw "wrongVersion";
 			}
+
 			const pythonLocation = (/^Python location '([^']*)'/m.exec(
 				stdout,
 			) || [])[1];
@@ -213,6 +232,7 @@ export class AzService {
 				console.error(err);
 			}
 		}
+
 		return undefined;
 	}
 
@@ -225,7 +245,9 @@ export class AzService {
 			[pythonLocation],
 			processOptions,
 		);
+
 		process.stdout.setEncoding("utf8");
+
 		process.stdout.on("data", (data) => {
 			this.data += data;
 
@@ -233,6 +255,7 @@ export class AzService {
 
 			if (nl !== -1) {
 				const line = this.data.substr(0, nl);
+
 				this.data = this.data.substr(nl + 1);
 
 				const response = JSON.parse(line);
@@ -241,24 +264,32 @@ export class AzService {
 
 				if (listener) {
 					delete this.listeners[response.sequence];
+
 					listener(undefined, response);
 				}
 			}
 		});
+
 		process.stderr.setEncoding("utf8");
+
 		process.stderr.on("data", (data) => {
 			console.error(data);
 		});
+
 		process.on("error", (err) => {
 			console.error(err);
 		});
+
 		process.on("exit", (code, signal) => {
 			console.error(`Exit code ${code}, signal ${signal}`);
+
 			this.process = undefined;
 
 			for (const sequence in this.listeners) {
 				const listener = this.listeners[sequence];
+
 				delete this.listeners[sequence];
+
 				listener(
 					`Python process terminated with exit code ${code}, signal ${signal}.`,
 					undefined,

@@ -3,7 +3,9 @@ import * as fs from "fs";
 
 export interface ExecResult {
 	error: Error | null;
+
 	stdout: string;
+
 	stderr: string;
 }
 
