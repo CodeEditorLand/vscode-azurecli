@@ -511,9 +511,7 @@ class RunLineInEditor {
 
 				for (
 					let index = selectionStart.line + 1;
-
 					index <= selectionEnd.line;
-
 					index++
 				) {
 					if (command.trim().endsWith(this.continuationCharacter)) {
