@@ -6,6 +6,7 @@
 	"scripts": {
 		"compile": "tsc -p ./"
 	},
+	"l10n": "./l10n",
 	"contributes": {
 		"commands": [
 			{
@@ -119,13 +120,12 @@
 	"dependencies": {
 		"elegant-spinner": "3.0.0",
 		"jmespath": "0.16.0",
-		"semver": "7.7.0"
+		"semver": "7.7.1"
 	},
 	"devDependencies": {
 		"@types/jmespath": "0.15.2",
-		"@types/node": "22.13.0",
+		"@types/node": "22.13.1",
 		"@types/semver": "7.5.8"
 	},
-	"icon": "images/azure_icon.png",
-	"l10n": "./l10n"
+	"icon": "images/azure_icon.png"
 }
